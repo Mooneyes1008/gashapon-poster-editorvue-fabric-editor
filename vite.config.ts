@@ -7,6 +7,7 @@
  * @LastEditTime: 2024-10-09 23:57:48
  */
 import { defineConfig, loadEnv } from 'vite';
+import localDevGuard from './config/localDevGuard';
 import vue from '@vitejs/plugin-vue';
 import { createHtmlPlugin } from 'vite-plugin-html';
 import vueJsx from '@vitejs/plugin-vue-jsx';
@@ -25,12 +26,13 @@ const config = ({ mode }) => {
   return {
     base: isProd ? APP_BASE_PATH : '/',
     plugins: [
+      localDevGuard(),
       vue(),
       autoImports({
         imports: ['vue'],
         dts: './typings/auto-imports.d.ts',
         eslintrc: {
-          enabled: true, // 一般更新imports启动一次即可
+          enabled: false, // globals 已随仓库保存，启动时不重写受版本管理的文件
         },
       }),
       vueSetupExtend(),
@@ -107,8 +109,10 @@ const config = ({ mode }) => {
       },
     },
     server: {
+      host: '127.0.0.1',
       port: 3000,
-      open: true,
+      open: false,
+      cors: false,
       proxy: {
         '/fontFile': {
           target: 'https://github.com/',

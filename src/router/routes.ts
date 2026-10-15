@@ -3,8 +3,9 @@ import type { RouteRecordRaw } from 'vue-router';
 import { setToken, autoLogin, logout } from '@/api/user';
 
 const routes: RouteRecordRaw[] = [
+  { path: '/', component: () => import('@/views/gashapon/index.vue') },
   {
-    path: '/',
+    path: '/original',
     beforeEnter: async (to) => {
       // 自动登录功能
       if (to.query.username && to.query.key) {

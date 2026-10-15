@@ -141,7 +141,8 @@ export function base64ToBlob(base64Data: string) {
     return null;
   }
   const dataArr = base64Data.split(',');
-  const imageType = dataArr[0].match(/:(.*?);/)[1];
+  const imageType = dataArr[0].match(/:(.*?);/)?.[1];
+  if (!imageType || dataArr.length !== 2) return null;
   const textData = window.atob(dataArr[1]);
   const arrayBuffer = new ArrayBuffer(textData.length);
   const uint8Array = new Uint8Array(arrayBuffer);

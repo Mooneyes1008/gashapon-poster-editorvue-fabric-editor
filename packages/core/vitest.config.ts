@@ -10,6 +10,7 @@ export default defineConfig((_configEnv) =>
       },
     },
     test: {
+      api: false,
       include: ['./__tests__/**/*.spec.ts'],
 
       deps: {

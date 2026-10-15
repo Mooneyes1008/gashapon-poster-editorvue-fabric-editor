@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "a template project for vue3, ViewUIPlus, TypeScript and Vite.",
   "scripts": {
-    "preinstall": "npx only-allow pnpm",
+    "preinstall": "node scripts/check-package-manager.cjs",
     "serve": "pnpm dev",
     "dev": "vite serve",
     "dev:staging": "vite serve --mode=staging",
@@ -15,7 +15,9 @@
     "preview": "pnpm build && vite preview",
     "preview:staging": "pnpm build:staging && vite preview --mode=staging",
     "prepare": "husky install",
-    "test": "pnpm -C packages/core test"
+    "test": "pnpm -C packages/core test",
+    "test:run": "pnpm -C packages/core exec vitest run",
+    "typecheck:poster": "vue-tsc --noEmit -p tsconfig.poster.json"
   },
   "dependencies": {
     "@kuaitu/core": "workspace:^",
@@ -84,5 +86,10 @@
     "overrides": {
       "@jridgewell/gen-mapping": "0.3.5"
     }
-  }
+  },
+  "engines": {
+    "node": ">=18 <21",
+    "pnpm": "8.x"
+  },
+  "packageManager": "pnpm@8.4.0"
 }

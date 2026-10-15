@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "src/gashapon/**/*.ts",
+    "src/views/gashapon/**/*.vue",
+    "typings/env.d.ts",
+    "typings/extends.d.ts"
+  ],
+  "references": [],
+  "files": ["src/views/gashapon/index.vue"]
+}
