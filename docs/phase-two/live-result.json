@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "startedAt": "2026-10-15T12:14:59.572Z",
+  "completedAt": "2026-10-15T12:15:10.798Z",
+  "provider": "Wikimedia Commons",
+  "mode": "keywords",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Tulip_Tulipa_clusiana_%27Lady_Jane%27_Rock_Ledge_Flower_Edit_2000px.jpg",
+  "license": "BY-SA",
+  "attribution": "Tulip Tulipa clusiana 'Lady Jane' Rock Ledge Flower Edit 2000px.jpg — Photo by and (c)2007 Derek Ramsey ( Ram-Man ). Co-attribution must be given to the Chanticleer Garden. / BY-SA 3.0 / Self-photographed",
+  "query": "flower",
+  "candidates": 11,
+  "aiConfigured": false,
+  "aiPaidFlowVerified": false,
+  "checks": [
+    "real search",
+    "real image preview",
+    "license metadata",
+    "asset import",
+    "canvas insertion",
+    "embedded-image project export",
+    "refresh recovery with provenance"
+  ],
+  "pageErrors": []
+}

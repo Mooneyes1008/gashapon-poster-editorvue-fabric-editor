@@ -27,3 +27,6 @@ yarn.lock
 package-lock.json
 typings/auto-imports.d.ts
 .eslintrc-auto-import.json
+
+# Server credentials and private atomic-write files
+server/.env.local*

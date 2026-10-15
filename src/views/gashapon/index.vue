@@ -17,7 +17,8 @@ import {
   type PosterProject,
 } from '../../gashapon/project';
 import { templatePage, templates } from '../../gashapon/templates';
-import { materialSearchProvider } from '../../gashapon/ai';
+import MaterialSearchPanel from '../../components/MaterialSearchPanel.vue';
+import type { ImportedMaterial } from '../../gashapon/ai';
 
 const project = ref<PosterProject>(newProject());
 const current = computed(
@@ -549,6 +550,23 @@ async function upload(event: Event, replacing = false) {
     );
   });
 }
+async function importSearchAsset(material: ImportedMaterial) {
+  if (!ready.value || busy.value) throw new Error('请等待当前编辑操作完成。');
+  let imported = false;
+  await run(async () => {
+    const blob = await (await fetch(material.data)).blob();
+    const asset = await readAsset(new File([blob], material.name, { type: blob.type }), 'material');
+    if (!asset.provenance) asset.provenance = material.provenance;
+    snapshot();
+    persist();
+    await saveQueue;
+    tab.value = 'material';
+    imported = true;
+    if (status.value === '自动保存失败') return;
+    notify('真实素材已加入共享资产库，来源和署名信息已保留。点击缩略图加入画布。');
+  });
+  if (!imported) throw new Error('加入资产库失败，请查看编辑器提示。');
+}
 async function placeAsset(asset: Asset, replacing = false) {
   const old = canvas.getActiveObject() as any;
   if (replacing && (!old || old.locked || !(old.type === 'image' || old.slot)))
@@ -864,6 +882,16 @@ onBeforeUnmount(() => {
                 <img :src="asset.data" :alt="asset.name" />
               </button>
               <span :title="asset.name">{{ asset.name }}</span>
+              <a
+                v-if="asset.provenance"
+                :href="asset.provenance.sourceUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                :title="asset.provenance.attribution"
+                style="font-size: 9px"
+              >
+                {{ asset.provenance.license }} · 来源与署名 ↗
+              </a>
               <button
                 class="text-button"
                 :disabled="busy || selectedLocked || !(selectedType === 'image' || selectedSlot)"
@@ -885,8 +913,11 @@ onBeforeUnmount(() => {
               <button :disabled="!ready || busy" @click="addDecoration('rect')">▰ 标签</button>
             </div>
             <div class="offline-note">
-              <b>在线素材暂不可用</b>
-              <p>上游服务返回 403。本阶段使用本地素材，不影响上传、文字、保存和导出。</p>
+              <b>原在线素材库暂不可用</b>
+              <p>
+                原 github.kuaitu.cc 服务返回 403。可使用本地素材，或在“AI 找素材”中检索真实
+                Wikimedia 图库；不影响编辑、保存和导出。
+              </p>
             </div>
           </template>
         </template>
@@ -951,30 +982,11 @@ onBeforeUnmount(() => {
             <p>文字内容会随项目保存。不同电脑的系统字体可能略有差异。</p>
           </div>
         </template>
-        <template v-else>
-          <div class="section-intro">
-            <span class="coming-soon">尚未接入</span>
-            <h2>灵感，下一站见。</h2>
-            <p>AI 找素材 · 扩展预留</p>
-          </div>
-          <div class="help-card">
-            <p>描述你的想法，扩展中、英、日关键词，检索真实素材并进行视觉筛选。</p>
-            <ol>
-              <li>自然语言需求</li>
-              <li>中 / 英 / 日关键词扩展</li>
-              <li>真实素材检索与来源授权</li>
-              <li>视觉筛选与人工选择</li>
-            </ol>
-          </div>
-          <textarea
-            disabled
-            placeholder="例如：温暖复古的日式喫茶店，奶油绿与砖红色…"
-            aria-label="AI 素材需求（尚未接入）"
-          ></textarea>
-          <button class="wide-button" disabled>
-            {{ materialSearchProvider ? '搜索素材' : 'AI 找素材 · 尚未接入' }}
-          </button>
-        </template>
+        <MaterialSearchPanel
+          v-show="tab === 'ai'"
+          :import-asset="importSearchAsset"
+          :editor-busy="busy || !ready"
+        />
       </aside>
       <section class="canvas-area">
         <div class="canvas-toolbar">

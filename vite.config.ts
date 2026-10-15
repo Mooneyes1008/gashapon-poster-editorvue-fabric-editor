@@ -114,6 +114,7 @@ const config = ({ mode }) => {
       open: false,
       cors: false,
       proxy: {
+        '/api/material-search': { target: 'http://127.0.0.1:3001', changeOrigin: true },
         '/fontFile': {
           target: 'https://github.com/',
           changeOrigin: true,

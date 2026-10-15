@@ -6,6 +6,19 @@ export interface Asset {
   width: number;
   height: number;
   kind: 'product' | 'material';
+  provenance?: {
+    provider: 'openverse' | 'wikimedia';
+    sourceUrl: string;
+    originalUrl: string;
+    title: string;
+    creator: string;
+    license: string;
+    licenseVersion: string;
+    licenseUrl: string;
+    attribution: string;
+    importedAt: string;
+    reason: string;
+  };
 }
 export interface PosterPage {
   id: string;
@@ -106,6 +119,32 @@ export function validateProject(input: unknown): PosterProject {
       !['product', 'material'].includes(a.kind)
     )
       fail();
+    if (a.provenance) {
+      const source = a.provenance;
+      if (
+        !['openverse', 'wikimedia'].includes(source.provider) ||
+        !['sourceUrl', 'originalUrl', 'licenseUrl'].every((key) => {
+          try {
+            const url = new URL((source as any)[key]);
+            return ['https:', 'http:'].includes(url.protocol) && !url.username && !url.password;
+          } catch {
+            return false;
+          }
+        }) ||
+        ![
+          'title',
+          'creator',
+          'license',
+          'licenseVersion',
+          'attribution',
+          'importedAt',
+          'reason',
+        ].every(
+          (key) => typeof (source as any)[key] === 'string' && (source as any)[key].length <= 3000
+        )
+      )
+        fail();
+    }
     ids.add(a.id);
   });
   if (p.assets.reduce((sum, asset) => sum + asset.data.length, 0) > 100 * 1024 * 1024) fail();

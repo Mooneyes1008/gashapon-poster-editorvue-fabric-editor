@@ -125,3 +125,25 @@ test('shared image helper rejects malformed headers without crashing', () => {
   expect(base64ToBlob('not-an-image')).toBeNull();
   expect(base64ToBlob('data:image/png;base64,aGVsbG8=')?.[1]).toBe('png');
 });
+
+test('imported material provenance survives project roundtrip and cannot contain script URLs', () => {
+  const p = withImage();
+  p.assets[0].provenance = {
+    provider: 'wikimedia',
+    title: 'flower',
+    creator: 'An artist',
+    license: 'BY-SA',
+    licenseVersion: '4.0',
+    sourceUrl: 'https://commons.wikimedia.org/wiki/File:Flower.png',
+    originalUrl: 'https://upload.wikimedia.org/flower.png',
+    licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
+    attribution: 'An artist / BY-SA 4.0',
+    importedAt: '2026-10-15T00:00:00.000Z',
+    reason: '真实关键词检索',
+  };
+  expect(validateProject(JSON.parse(JSON.stringify(p))).assets[0].provenance).toEqual(
+    p.assets[0].provenance
+  );
+  p.assets[0].provenance.sourceUrl = 'javascript:alert(1)';
+  expect(() => validateProject(p)).toThrow();
+});

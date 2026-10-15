@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "checkedAt": "2026-10-15T12:12:18.652Z",
+  "provider": "Wikimedia Commons",
+  "mode": "keywords",
+  "query": "flower icon",
+  "candidateCount": 12,
+  "allVerified": true,
+  "importMime": "image/png",
+  "importContainsTransparentPixels": true,
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Flower_icon_new.png",
+  "license": "BY-SA",
+  "attribution": "Flower icon new.png — M.t.lifshits / BY-SA 3.0",
+  "aiCalls": 0
+}

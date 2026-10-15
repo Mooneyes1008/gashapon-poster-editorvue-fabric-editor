@@ -352,11 +352,13 @@ async function main() {
     await fs.writeFile(path.join(artifacts, 'demo.gashapon.json'), JSON.stringify(await saved()));
     await page.screenshot({ path: path.join(artifacts, 'editor.png'), fullPage: true });
     await page.getByRole('button', { name: '素材', exact: true }).click();
-    await page.getByText('在线素材暂不可用', { exact: true }).waitFor();
+    await page.getByText('原在线素材库暂不可用', { exact: true }).waitFor();
     await page.getByRole('button', { name: 'AI 找素材', exact: true }).click();
-    await page.getByRole('button', { name: 'AI 找素材 · 尚未接入', exact: true }).waitFor();
+    await page.getByRole('button', { name: '自然语言 + AI', exact: true }).click();
+    await page.getByRole('button', { name: '分析并检索（调用 AI）', exact: true }).waitFor();
+    await page.getByText('安全配置与费用', { exact: true }).waitFor();
     assert.deepEqual(errors, []);
-    await check('在线服务不可用时提示清楚，AI 标明未接入；完整流程零页面异常');
+    await check('在线旧素材不可用时提示清楚，AI 面板提供配置状态；完整流程零页面异常');
     await fs.writeFile(
       path.join(artifacts, 'result.json'),
       JSON.stringify(
